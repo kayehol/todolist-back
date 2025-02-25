@@ -1,27 +1,37 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using todo_back.Models;
 
 namespace todo_back.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/users")]
 public class UserController : ControllerBase
 {
     private readonly ILogger<UserController> _logger;
+    private readonly ApplicationDbContext _context;
 
-    public UserController(ILogger<UserController> logger)
+    public UserController(ILogger<UserController> logger, ApplicationDbContext context)
     {
         _logger = logger;
+        _context = context;
     }
 
-    [HttpGet(Name = "GetUsers")]
-    public IEnumerable<User> Get()
+    [HttpGet]
+    async public Task<ActionResult<IEnumerable<User>>> ListUsers()
     {
-        // return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-        // {
-        //     Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-        //     TemperatureC = Random.Shared.Next(-20, 55),
-        //     Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-        // })
-        // .ToArray();
+        return await _context.Users.ToListAsync();
+    }
+
+    [HttpPost]
+    async public Task<ActionResult<IEnumerable<User>>> CreateUser(User newUser)
+    {
+        newUser.Password = new PasswordHasher<User>().HashPassword(newUser, newUser.Password);
+
+        _context.Users.Add(newUser);
+        await _context.SaveChangesAsync();
+
+        return CreatedAtAction(nameof(CreateUser), new { id = newUser.Id }, newUser);
     }
 }
