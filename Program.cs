@@ -19,7 +19,6 @@ if (databaseUrl == null)
     throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 }
 
-// var connectionString = builder.Configuration.GetConnectionString(databaseUrl);
 var connectionString = databaseUrl;
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>

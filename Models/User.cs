@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace todo_back.Models;
 
 public class User
@@ -9,9 +11,14 @@ public class User
         CreatedAt = DateTime.Now;
     }
 
-    public String Login { get; set; }
+    [Key]
+    public int Id { get; set; }
 
-    public String Password { get; set; }
+    [Required]
+    public string Login { get; set; }
+
+    [Required]
+    public string Password { get; set; }
 
     public DateTime CreatedAt { get; set; }
 }
