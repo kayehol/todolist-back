@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using DotNetEnv;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,10 +10,17 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var connectionString =
-    builder.Configuration.GetConnectionString("DefaultConnection")
-        ?? throw new InvalidOperationException("Connection string"
-        + "'DefaultConnection' not found.");
+Env.Load();
+
+string? databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+
+if (databaseUrl == null)
+{
+    throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+}
+
+// var connectionString = builder.Configuration.GetConnectionString(databaseUrl);
+var connectionString = databaseUrl;
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
