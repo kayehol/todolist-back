@@ -8,7 +8,6 @@ public class User
     {
         Login = login;
         Password = password;
-        CreatedAt = DateTime.Now;
     }
 
     [Key]
@@ -20,5 +19,5 @@ public class User
     [Required]
     public string Password { get; set; }
 
-    public DateTime CreatedAt { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
 }
