@@ -19,13 +19,24 @@ public class UserController : ControllerBase
     }
 
     [HttpGet]
-    async public Task<ActionResult<IEnumerable<User>>> ListUsers()
+    public async Task<ActionResult<IEnumerable<User>>> ListUsers()
     {
         return await _context.Users.ToListAsync();
     }
 
+    [HttpGet("{id}")]
+    public async Task<ActionResult<User>> GetUser(int id)
+    {
+        User? user = await _context.Users.FindAsync(id);
+
+        if (user == null)
+            return NotFound();
+
+        return user;
+    }
+
     [HttpPost]
-    async public Task<ActionResult<IEnumerable<User>>> CreateUser(User newUser)
+    public async Task<ActionResult<IEnumerable<User>>> CreateUser(User newUser)
     {
         newUser.Password = new PasswordHasher<User>().HashPassword(newUser, newUser.Password);
 
