@@ -1,6 +1,5 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using todo_back.Services;
 using todo_back.Models;
 
 namespace todo_back.Controllers;
@@ -10,24 +9,24 @@ namespace todo_back.Controllers;
 public class UserController : ControllerBase
 {
     private readonly ILogger<UserController> _logger;
-    private readonly ApplicationDbContext _context;
+    private readonly UserService _userService;
 
-    public UserController(ILogger<UserController> logger, ApplicationDbContext context)
+    public UserController(ILogger<UserController> logger, UserService userService)
     {
         _logger = logger;
-        _context = context;
+        _userService = userService;
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<User>>> ListUsers()
+    public async Task<IEnumerable<User>> ListUsers()
     {
-        return await _context.Users.ToListAsync();
+        return await _userService.ListUsers();
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<User>> GetUser(int id)
     {
-        User? user = await _context.Users.FindAsync(id);
+        User? user = await _userService.GetUser(id);
 
         if (user == null)
             return NotFound();
@@ -36,12 +35,9 @@ public class UserController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<IEnumerable<User>>> CreateUser(User newUser)
+    public async Task<ActionResult<User>> CreateUser(User newUser)
     {
-        newUser.Password = new PasswordHasher<User>().HashPassword(newUser, newUser.Password);
-
-        _context.Users.Add(newUser);
-        await _context.SaveChangesAsync();
+        await _userService.CreateUser(newUser);
 
         return CreatedAtAction(nameof(CreateUser), new { id = newUser.Id }, newUser);
     }
