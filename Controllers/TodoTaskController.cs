@@ -48,6 +48,11 @@ public class TodoTaskController : ControllerBase
         if (id != todoTask.Id)
             return BadRequest();
 
+        bool exists = _todoTaskService.taskExists(id);
+
+        if (!exists)
+            return NotFound();
+
         await _todoTaskService.UpdateTodoTask(todoTask);
 
         return NoContent();
@@ -60,6 +65,7 @@ public class TodoTaskController : ControllerBase
 
         if (todoTask == null)
             return NotFound();
+
 
         await _todoTaskService.RemoveTodoTask(todoTask);
 
