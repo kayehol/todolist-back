@@ -48,7 +48,7 @@ public class TodoTaskController : ControllerBase
         if (id != todoTask.Id)
             return BadRequest();
 
-        bool exists = _todoTaskService.taskExists(id);
+        bool exists = _todoTaskService.TaskExists(id);
 
         if (!exists)
             return NotFound();

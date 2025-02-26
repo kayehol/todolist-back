@@ -22,7 +22,7 @@ public class TodoTaskService
         return await _context.TodoTasks.FindAsync(id);
     }
 
-    public bool taskExists(int id)
+    public bool TaskExists(int id)
     {
         return _context.TodoTasks.Any(t => t.Id == id);
     }
