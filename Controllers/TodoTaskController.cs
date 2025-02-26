@@ -43,12 +43,12 @@ public class TodoTaskController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public IActionResult UpdateTodoTask(int id, TodoTask todoTask)
+    public async Task<IActionResult> UpdateTodoTask(int id, TodoTask todoTask)
     {
         if (id != todoTask.Id)
             return BadRequest();
 
-        _todoTaskService.UpdateTodoTask(todoTask);
+        await _todoTaskService.UpdateTodoTask(todoTask);
 
         return NoContent();
     }
@@ -61,7 +61,7 @@ public class TodoTaskController : ControllerBase
         if (todoTask == null)
             return NotFound();
 
-        _todoTaskService.RemoveTodoTask(todoTask);
+        await _todoTaskService.RemoveTodoTask(todoTask);
 
         return NoContent();
     }

@@ -30,13 +30,13 @@ public class TodoTaskService
         return newTodoTask;
     }
 
-    public async void UpdateTodoTask(TodoTask todoTask)
+    public async Task UpdateTodoTask(TodoTask todoTask)
     {
         _context.Entry(todoTask).State = EntityState.Modified;
         await _context.SaveChangesAsync();
     }
 
-    public async void RemoveTodoTask(TodoTask todoTask)
+    public async Task RemoveTodoTask(TodoTask todoTask)
     {
         _context.TodoTasks.Remove(todoTask);
         await _context.SaveChangesAsync();
