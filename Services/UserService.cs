@@ -18,9 +18,16 @@ public class UserService
         return await _context.Users.ToListAsync();
     }
 
-    public async Task<User?> GetUser(int id)
+    public async Task<User?> GetUser(User user)
     {
-        return await _context.Users.FindAsync(id);
+        return await _context.Users.SingleOrDefaultAsync(
+                u => u.Login == user.Login
+                );
+    }
+
+    public bool UserExists(string login)
+    {
+        return _context.Users.Any(u => u.Login == login);
     }
 
     public async Task<User> CreateUser(User newUser)

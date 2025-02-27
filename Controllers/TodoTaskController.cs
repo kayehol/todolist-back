@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using todo_back.Models;
 using todo_back.Services;
 
 namespace todo_back.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/tasks")]
 public class TodoTaskController : ControllerBase
