@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using todo_back.Services;
 using todo_back.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace todo_back.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/users")]
 public class UserController : ControllerBase
@@ -21,17 +23,6 @@ public class UserController : ControllerBase
     public async Task<IEnumerable<User>> ListUsers()
     {
         return await _userService.ListUsers();
-    }
-
-    [HttpGet("{id}")]
-    public async Task<ActionResult<User>> GetUser(int id)
-    {
-        User? user = await _userService.GetUser(id);
-
-        if (user == null)
-            return NotFound();
-
-        return user;
     }
 
     [HttpPost]

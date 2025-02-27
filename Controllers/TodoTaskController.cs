@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using todo_back.Models;
 using todo_back.Services;
 
 namespace todo_back.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/tasks")]
 public class TodoTaskController : ControllerBase
@@ -48,6 +50,11 @@ public class TodoTaskController : ControllerBase
         if (id != todoTask.Id)
             return BadRequest();
 
+        bool exists = _todoTaskService.TaskExists(id);
+
+        if (!exists)
+            return NotFound();
+
         await _todoTaskService.UpdateTodoTask(todoTask);
 
         return NoContent();
@@ -60,6 +67,7 @@ public class TodoTaskController : ControllerBase
 
         if (todoTask == null)
             return NotFound();
+
 
         await _todoTaskService.RemoveTodoTask(todoTask);
 

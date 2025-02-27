@@ -22,6 +22,11 @@ public class TodoTaskService
         return await _context.TodoTasks.FindAsync(id);
     }
 
+    public bool TaskExists(int id)
+    {
+        return _context.TodoTasks.Any(t => t.Id == id);
+    }
+
     public async Task<TodoTask> CreateTodoTask(TodoTask newTodoTask)
     {
         _context.TodoTasks.Add(newTodoTask);
