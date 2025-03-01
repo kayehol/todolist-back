@@ -46,6 +46,19 @@ var connectionString = databaseUrl;
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:4200")
+                   .AllowAnyHeader()
+                   .AllowAnyOrigin()
+                   .AllowAnyMethod();
+        });
+});
+
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -58,6 +71,7 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseCors();
 
 app.MapControllers();
 

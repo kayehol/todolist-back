@@ -45,7 +45,7 @@ public class TodoTaskController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateTodoTask(int id, TodoTask todoTask)
+    public async Task<IActionResult> UpdateTodoTask(int id, [FromBody] TodoTask todoTask)
     {
         if (id != todoTask.Id)
             return BadRequest();
