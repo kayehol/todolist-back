@@ -22,7 +22,9 @@ public class TodoTaskService
     public async Task<PaginatedTodoTask<TodoTask>> ListPaginated(int pageNumber, int pageSize, string userLogin)
     {
         User? user = await _userService.GetUser(userLogin);
-        int total = await _context.TodoTasks.CountAsync();
+        int total = await _context.TodoTasks
+            .Where(t => t.UserId == user!.Id)
+            .CountAsync();
 
         List<TodoTask> tasks = await _context.TodoTasks
             .Where(t => t.UserId == user!.Id)
