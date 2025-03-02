@@ -17,6 +17,26 @@ public class TodoTaskService
         return await _context.TodoTasks.ToListAsync();
     }
 
+    public async Task<PaginatedTodoTask<TodoTask>> ListPaginated(int pageNumber, int pageSize)
+    {
+        int total = await _context.TodoTasks.CountAsync();
+
+        List<TodoTask> tasks = await _context.TodoTasks
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        // return await _context.TodoTasks.ToListAsync();
+        //
+        return new PaginatedTodoTask<TodoTask>
+        {
+            Tasks = tasks,
+            TotalCount = total,
+            PageNumber = pageNumber,
+            PageSize = pageSize,
+        };
+    }
+
     public async Task<TodoTask?> GetTodoTask(int id)
     {
         return await _context.TodoTasks.FindAsync(id);

@@ -1,8 +1,4 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Identity;
 
 using todo_back.Models;
@@ -12,16 +8,16 @@ using todo_back.Services;
 [Route("api/[controller]")]
 public class AuthController : ControllerBase
 {
-    private readonly IConfiguration _configuration;
     private readonly UserService _userService;
+    private readonly AuthService _authService;
 
     public AuthController(
-        IConfiguration configuration,
-        UserService userService
+            UserService userService,
+            AuthService authService
     )
     {
-        _configuration = configuration;
         _userService = userService;
+        _authService = authService;
     }
 
     [HttpPost("register")]
@@ -43,36 +39,16 @@ public class AuthController : ControllerBase
         if (user == null)
             return Unauthorized("Credenciais inválidas");
 
-        var result = new PasswordHasher<User>().VerifyHashedPassword(user, user.Password, userLogin.Password);
+        PasswordVerificationResult result = _authService.VerifyPassword(user, userLogin);
 
         if (result == PasswordVerificationResult.Failed)
             return Unauthorized("Credenciais inválidas");
 
-        var token = GenerateJwtToken(user);
+        string token = _authService.GenerateJwtToken(user);
 
         return Ok(new { Token = token });
     }
 
-    private string GenerateJwtToken(User user)
-    {
-        var claims = new[]
-        {
-          new Claim(ClaimTypes.Name, user.Login),
-        };
-
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
-        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-        var token = new JwtSecurityToken(
-          issuer: _configuration["Jwt:Issuer"],
-          audience: _configuration["Jwt:Audience"],
-          claims: claims,
-          expires: DateTime.Now.AddMinutes(Convert.ToDouble(_configuration["Jwt:ExpirationMinutes"])),
-          signingCredentials: creds
-        );
-
-        return new JwtSecurityTokenHandler().WriteToken(token);
-    }
 
 
 }

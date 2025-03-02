@@ -7,10 +7,15 @@ namespace todo_back.Services;
 public class UserService
 {
     private readonly ApplicationDbContext _context;
+    private readonly AuthService _authService;
 
-    public UserService(ApplicationDbContext context)
+    public UserService(
+            ApplicationDbContext context,
+            AuthService authService
+    )
     {
         _context = context;
+        _authService = authService;
     }
 
     public async Task<IEnumerable<User>> ListUsers()
@@ -32,7 +37,7 @@ public class UserService
 
     public async Task<User> CreateUser(User newUser)
     {
-        newUser.Password = new PasswordHasher<User>().HashPassword(newUser, newUser.Password);
+        newUser.Password = _authService.HashPassword(newUser);
 
         _context.Users.Add(newUser);
         await _context.SaveChangesAsync();
