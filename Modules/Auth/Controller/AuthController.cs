@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Identity;
 
 using todo_back.Models;
 using todo_back.Services;
+using System.Security.Claims;
+
+namespace todo_back.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -28,13 +31,13 @@ public class AuthController : ControllerBase
 
         await _userService.CreateUser(user);
 
-        return Ok("Usuário criado com sucesso");
+        return Ok(new { message = "Usuário criado com sucesso" });
     }
 
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] User userLogin)
     {
-        User? user = await _userService.GetUser(userLogin);
+        User? user = await _userService.GetUser(userLogin.Login);
 
         if (user == null)
             return Unauthorized("Credenciais inválidas");
@@ -49,6 +52,19 @@ public class AuthController : ControllerBase
         return Ok(new { Token = token });
     }
 
+    [HttpGet("user")]
+    public async Task<User?> GetLoggedUser()
+    {
+        string? login = User.FindFirst(ClaimTypes.Name)?.Value;
 
+        if (login == null)
+            return null;
 
+        User? user = await _userService.GetUser(login);
+
+        if (user == null)
+            return null;
+
+        return user;
+    }
 }

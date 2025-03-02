@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
 using todo_back.Models;
 
 namespace todo_back.Services;
@@ -23,10 +22,10 @@ public class UserService
         return await _context.Users.ToListAsync();
     }
 
-    public async Task<User?> GetUser(User user)
+    public async Task<User?> GetUser(string userLogin)
     {
         return await _context.Users.SingleOrDefaultAsync(
-                u => u.Login == user.Login
+                u => u.Login == userLogin
                 );
     }
 
