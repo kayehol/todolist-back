@@ -25,6 +25,13 @@ public class TodoTaskController : ControllerBase
         return await _todoTaskService.ListTodoTasks();
     }
 
+    [HttpGet("paginated")]
+    public async Task<IActionResult> ListPaginated(int page = 1, int pageSize = 10)
+    {
+        var result = await _todoTaskService.ListPaginated(page, pageSize);
+        return Ok(result);
+    }
+
     [HttpGet("{id}")]
     public async Task<ActionResult<TodoTask>> GetTodoTask(int id)
     {
