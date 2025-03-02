@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using todo_back.Models;
@@ -28,7 +29,9 @@ public class TodoTaskController : ControllerBase
     [HttpGet("paginated")]
     public async Task<IActionResult> ListPaginated(int page = 1, int pageSize = 10)
     {
-        var result = await _todoTaskService.ListPaginated(page, pageSize);
+        string? userLogin = User.FindFirst(ClaimTypes.Name)?.Value;
+
+        var result = await _todoTaskService.ListPaginated(page, pageSize, userLogin!);
         return Ok(result);
     }
 

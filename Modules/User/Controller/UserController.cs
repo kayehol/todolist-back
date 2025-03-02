@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using todo_back.Services;
 using todo_back.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace todo_back.Controllers;
 
@@ -25,11 +26,12 @@ public class UserController : ControllerBase
         return await _userService.ListUsers();
     }
 
-    [HttpPost]
-    public async Task<ActionResult<User>> CreateUser(User newUser)
-    {
-        await _userService.CreateUser(newUser);
 
-        return CreatedAtAction(nameof(CreateUser), new { id = newUser.Id }, newUser);
-    }
+    // [HttpPost]
+    // public async Task<ActionResult<User>> CreateUser(User newUser)
+    // {
+    //     await _userService.CreateUser(newUser);
+    //
+    //     return CreatedAtAction(nameof(CreateUser), new { id = newUser.Id }, newUser);
+    // }
 }

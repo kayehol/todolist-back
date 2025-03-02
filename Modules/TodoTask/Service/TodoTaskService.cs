@@ -6,10 +6,12 @@ namespace todo_back.Services;
 public class TodoTaskService
 {
     private readonly ApplicationDbContext _context;
+    private readonly UserService _userService;
 
-    public TodoTaskService(ApplicationDbContext context)
+    public TodoTaskService(ApplicationDbContext context, UserService userService)
     {
         _context = context;
+        _userService = userService;
     }
 
     public async Task<IEnumerable<TodoTask>> ListTodoTasks()
@@ -17,17 +19,18 @@ public class TodoTaskService
         return await _context.TodoTasks.ToListAsync();
     }
 
-    public async Task<PaginatedTodoTask<TodoTask>> ListPaginated(int pageNumber, int pageSize)
+    public async Task<PaginatedTodoTask<TodoTask>> ListPaginated(int pageNumber, int pageSize, string userLogin)
     {
+        User? user = await _userService.GetUser(userLogin);
         int total = await _context.TodoTasks.CountAsync();
 
         List<TodoTask> tasks = await _context.TodoTasks
+            .Where(t => t.UserId == user!.Id)
+            .OrderByDescending(t => t.Id)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();
 
-        // return await _context.TodoTasks.ToListAsync();
-        //
         return new PaginatedTodoTask<TodoTask>
         {
             Tasks = tasks,

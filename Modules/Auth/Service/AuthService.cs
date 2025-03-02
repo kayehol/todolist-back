@@ -48,5 +48,4 @@ public class AuthService
     {
         return _passwordHasher.VerifyHashedPassword(user, user.Password, userLogin.Password);
     }
-
 }
