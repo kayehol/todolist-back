@@ -6,3 +6,6 @@ Aplicação para gerenciar tarefas
 - Clone o repositório
 - Inicie com `dotnet run`
 
+# Documentação
+- Acessar swagger `http://localhost:5195/swagger`
+
